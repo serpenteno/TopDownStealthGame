@@ -8,7 +8,10 @@
 
 class UInputMappingContext;
 class UInputAction;
+class USpringArmComponent;
 class UCameraComponent;
+
+struct FInputActionValue;
 
 /**
  * Main character's class
@@ -46,12 +49,9 @@ private:
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, Category="Camera")
-	TObjectPtr<UCameraComponent> MainCamera;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent> TopDownCamera;
-	
-	UPROPERTY(VisibleAnywhere, Category="Camera")
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
 };
