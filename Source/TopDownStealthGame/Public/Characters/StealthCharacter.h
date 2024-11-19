@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/BaseCharacter.h"
+#include "Characters/BaseCharacter.h"
 #include "StealthCharacter.generated.h"
 
 class UInputMappingContext;
@@ -53,8 +53,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> TopDownCamera;
-
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	FRotator FixedCameraRotation;
 
 };
