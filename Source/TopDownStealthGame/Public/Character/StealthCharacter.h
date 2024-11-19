@@ -38,20 +38,23 @@ private:
 	void Look(const FInputActionValue& Value);
 
 	// Enhanced Input
-	UPROPERTY(EditAnywhere, Category="Enhanced Input")
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputMappingContext> StealthMappingContext;
 
-	UPROPERTY(EditAnywhere, Category="Enhanced Input")
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditAnywhere, Category="Enhanced Input")
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputAction> LookAction;
 
 	// Camera
-	UPROPERTY(VisibleAnywhere, Category="Camera")
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, Category="Camera")
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> TopDownCamera;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FRotator FixedCameraRotation;
 
 };

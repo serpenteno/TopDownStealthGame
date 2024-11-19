@@ -12,7 +12,8 @@ AStealthCharacter::AStealthCharacter()
 {
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->TargetArmLength = 600.0f;
+	CameraBoom->bUsePawnControlRotation = false;
 
 	TopDownCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Top-Down Camera"));
 	TopDownCamera->SetupAttachment(CameraBoom);
@@ -44,7 +45,6 @@ void AStealthCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
 }
 
 void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -53,7 +53,10 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
+		// Move
 		EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AStealthCharacter::Move);
+
+		// Look
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStealthCharacter::Look);
 	}
 }
@@ -62,14 +65,16 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D MoveValue = Value.Get<FVector2D>();
 
-	const FRotator ControlRotation = GetControlRotation();
-	const FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);
-	const FRotationMatrix RotationMatrix(YawRotation);
-	const FVector ControlForward = RotationMatrix.GetUnitAxis(EAxis::X);
-	const FVector ControlRight = RotationMatrix.GetUnitAxis(EAxis::Y);
+	FVector CameraForward = TopDownCamera->GetForwardVector();
+	FVector CameraRight = TopDownCamera->GetRightVector();
 
-	AddMovementInput(ControlForward, MoveValue.Y);
-	AddMovementInput(ControlRight, MoveValue.X);
+	CameraForward.Z = 0;
+	CameraRight.Z = 0;
+	CameraForward.Normalize();
+	CameraRight.Normalize();
+
+	AddMovementInput(CameraForward, MoveValue.Y);
+	AddMovementInput(CameraRight, MoveValue.X);
 }
 
 void AStealthCharacter::Look(const FInputActionValue& Value)
