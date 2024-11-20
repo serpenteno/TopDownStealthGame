@@ -9,7 +9,7 @@
 /**
  * The base for any game character
  */
-UCLASS()
+UCLASS(Abstract)
 class TOPDOWNSTEALTHGAME_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()

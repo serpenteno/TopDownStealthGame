@@ -18,6 +18,10 @@ AStealthCharacter::AStealthCharacter()
 	TopDownCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Top-Down Camera"));
 	TopDownCamera->SetupAttachment(CameraBoom);
 
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("First-Person Camera"));
+	FirstPersonCamera->SetupAttachment(GetMesh(), FName("Head"));
+	FirstPersonCamera->bUsePawnControlRotation = true;
+
 	GetCharacterMovement()->bCanWalkOffLedges = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
@@ -39,6 +43,13 @@ void AStealthCharacter::BeginPlay()
 			}
 		}
 	}
+
+	// Camera setup
+	if (TopDownCamera && FirstPersonCamera)
+	{
+		TopDownCamera->SetActive(true);
+		FirstPersonCamera->SetActive(false);
+	}
 }
 
 void AStealthCharacter::Tick(float DeltaTime)
@@ -58,30 +69,70 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 		// Look
 		EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStealthCharacter::Look);
+
+		// SwitchView
+		EnhancedInput->BindAction(SwitchViewAction, ETriggerEvent::Started, this, &AStealthCharacter::SwitchView);
+		EnhancedInput->BindAction(SwitchViewAction, ETriggerEvent::Completed, this, &AStealthCharacter::SwitchView);
 	}
 }
 
 void AStealthCharacter::Move(const FInputActionValue& Value)
 {
-	const FVector2D MoveValue = Value.Get<FVector2D>();
+	if (GetController() && TopDownCamera && TopDownCamera->IsActive())
+	{
+		const FVector2D MoveValue = Value.Get<FVector2D>();
 
-	FVector CameraForward = TopDownCamera->GetForwardVector();
-	FVector CameraRight = TopDownCamera->GetRightVector();
+		FVector CameraForward = TopDownCamera->GetForwardVector();
+		FVector CameraRight = TopDownCamera->GetRightVector();
 
-	CameraForward.Z = 0;
-	CameraRight.Z = 0;
-	CameraForward.Normalize();
-	CameraRight.Normalize();
+		CameraForward.Z = 0;
+		CameraRight.Z = 0;
+		CameraForward.Normalize();
+		CameraRight.Normalize();
 
-	AddMovementInput(CameraForward, MoveValue.Y);
-	AddMovementInput(CameraRight, MoveValue.X);
+		AddMovementInput(CameraForward, MoveValue.Y);
+		AddMovementInput(CameraRight, MoveValue.X);
+	}
 }
 
 void AStealthCharacter::Look(const FInputActionValue& Value)
 {
-	const FVector2D LookValue = Value.Get<FVector2D>();
+	if (GetController() && FirstPersonCamera && FirstPersonCamera->IsActive())
+	{
+		const FVector2D LookValue = Value.Get<FVector2D>();
 
-	AddControllerYawInput(LookValue.X);
-	AddControllerPitchInput(LookValue.Y);
+		AddControllerYawInput(LookValue.X);
+		AddControllerPitchInput(LookValue.Y);
+	}
+}
+
+void AStealthCharacter::SwitchView(const FInputActionValue& Value)
+{
+	if (!TopDownCamera || !FirstPersonCamera)
+	{
+		return;
+	}
+
+	if (TopDownCamera->IsActive())
+	{
+		// Ensure controller matches the FirstPersonCamera rotation
+		if (GetController())
+		{
+			const FRotator& CameraRotation = FirstPersonCamera->GetComponentRotation();
+			GetController()->SetControlRotation(FRotator(0.0f, CameraRotation.Yaw, 0.0f));
+		}
+
+		FirstPersonCamera->SetActive(true);
+		TopDownCamera->SetActive(false);
+		GetMesh()->SetVisibility(false);
+		bUseControllerRotationYaw = true;
+	}
+	else if (FirstPersonCamera->IsActive())
+	{
+		TopDownCamera->SetActive(true);
+		FirstPersonCamera->SetActive(false);
+		GetMesh()->SetVisibility(true);
+		bUseControllerRotationYaw = false;
+	}
 }
 

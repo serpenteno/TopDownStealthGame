@@ -17,7 +17,7 @@ struct FInputActionValue;
  * Main character's class
  */
 UCLASS()
-class TOPDOWNSTEALTHGAME_API AStealthCharacter : public ABaseCharacter
+class TOPDOWNSTEALTHGAME_API AStealthCharacter final : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -36,6 +36,7 @@ private:
 	// Callbacks for InputActions
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void SwitchView(const FInputActionValue& Value);
 
 	// Enhanced Input
 	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
@@ -47,11 +48,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputAction> LookAction;
 
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
+	TObjectPtr<UInputAction> SwitchViewAction;
+
 	// Camera
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> TopDownCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
 };
