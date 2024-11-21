@@ -7,6 +7,17 @@
 #include "BaseCharacter.generated.h"
 
 /**
+ * Describes the stance of a character
+ */
+UENUM(BlueprintType)
+enum class ECharacterStance : uint8
+{
+	Prone UMETA(DisplayName = "Prone"),
+	Crouch UMETA(DisplayName = "Crouch"),
+	Stand UMETA(DisplayName = "Stand")
+};
+
+/**
  * The base for any game character
  */
 UCLASS(Abstract)
@@ -28,5 +39,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ECharacterStance CharacterStance = ECharacterStance::Stand;
 
 };
