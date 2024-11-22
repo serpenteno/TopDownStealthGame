@@ -2,6 +2,7 @@
 
 
 #include "Characters/BaseCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -23,6 +24,26 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetVelocity().Length() > GetCharacterMovement()->MaxWalkSpeedCrouched)
+	{
+		MovementState = EMovementState::Running;
+	}
+	else if (GetVelocity().Length() <= GetCharacterMovement()->MaxWalkSpeedCrouched && GetVelocity().Length() > 0.0f)
+	{
+		if (GetVelocity().Length() <= MaxCrawlSpeed && CharacterStance == ECharacterStance::Prone)
+		{
+			MovementState = EMovementState::Crawling;
+		} 
+		else
+		{
+
+			MovementState = EMovementState::Walking;
+		}
+	}
+	else
+	{
+		MovementState = EMovementState::Idle;
+	}
 }
 
 // Called to bind functionality to input

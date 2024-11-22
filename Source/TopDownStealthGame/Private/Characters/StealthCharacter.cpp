@@ -24,9 +24,12 @@ AStealthCharacter::AStealthCharacter()
 
 	GetCharacterMovement()->bCanWalkOffLedges = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	bUseControllerRotationYaw = false;
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	AutoPossessAI = EAutoPossessAI::Disabled;
+
+	bCanProne = true;
 }
 
 void AStealthCharacter::BeginPlay()

@@ -13,8 +13,20 @@ UENUM(BlueprintType)
 enum class ECharacterStance : uint8
 {
 	Prone UMETA(DisplayName = "Prone"),
-	Crouch UMETA(DisplayName = "Crouch"),
-	Stand UMETA(DisplayName = "Stand")
+	Crouching UMETA(DisplayName = "Crouch"),
+	Standing UMETA(DisplayName = "Stand")
+};
+
+/**
+ * Describes the movement of a character base on it's current speed
+ */
+UENUM(BlueprintType)
+enum class EMovementState : uint8
+{
+	Idle UMETA(DisplayName = "Idle"),
+	Crawling UMETA(DisplayName = "Crawling"),
+	Walking UMETA(DisplayName = "Walking"),
+	Running UMETA(DisplayName = "Running")
 };
 
 /**
@@ -42,6 +54,15 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ECharacterStance CharacterStance = ECharacterStance::Stand;
+	ECharacterStance CharacterStance = ECharacterStance::Standing;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EMovementState MovementState = EMovementState::Idle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MaxCrawlSpeed = 150.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanProne = false;
 
 };
