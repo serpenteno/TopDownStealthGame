@@ -23,20 +23,23 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FVector VelocityXY = GetVelocity();
+	VelocityXY.Z = 0;
+	const float& SpeedXY = VelocityXY.Length();
 
-	if (GetVelocity().Length() > GetCharacterMovement()->MaxWalkSpeedCrouched)
+	if (SpeedXY > GetCharacterMovement()->MaxWalkSpeedCrouched)
 	{
 		MovementState = EMovementState::Running;
 	}
-	else if (GetVelocity().Length() <= GetCharacterMovement()->MaxWalkSpeedCrouched && GetVelocity().Length() > 0.0f)
+	else if (SpeedXY <= GetCharacterMovement()->MaxWalkSpeedCrouched && SpeedXY > 0.0f)
 	{
-		if (GetVelocity().Length() <= MaxCrawlSpeed && CharacterStance == ECharacterStance::Prone)
+		if (SpeedXY <= MaxCrawlSpeed && CharacterStance == ECharacterStance::Prone)
 		{
 			MovementState = EMovementState::Crawling;
 		} 
 		else
 		{
-
 			MovementState = EMovementState::Walking;
 		}
 	}
