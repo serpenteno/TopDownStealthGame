@@ -37,6 +37,7 @@ private:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void SwitchView(const FInputActionValue& Value);
+	void ChangeStance(const FInputActionValue& Value);
 
 	// Enhanced Input
 	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
@@ -50,6 +51,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
 	TObjectPtr<UInputAction> SwitchViewAction;
+
+	UPROPERTY(EditAnywhere, Category = "Enhanced Input")
+	TObjectPtr<UInputAction> ChangeStanceAction;
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, Category = "Camera")

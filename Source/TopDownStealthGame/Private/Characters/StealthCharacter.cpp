@@ -76,6 +76,10 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		// SwitchView
 		EnhancedInput->BindAction(SwitchViewAction, ETriggerEvent::Started, this, &AStealthCharacter::SwitchView);
 		EnhancedInput->BindAction(SwitchViewAction, ETriggerEvent::Completed, this, &AStealthCharacter::SwitchView);
+
+		// ChangeStance
+		EnhancedInput->BindAction(ChangeStanceAction, ETriggerEvent::Triggered, this, &AStealthCharacter::ChangeStance);
+		EnhancedInput->BindAction(ChangeStanceAction, ETriggerEvent::Canceled, this, &AStealthCharacter::ChangeStance);
 	}
 }
 
@@ -83,7 +87,7 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 {
 	if (GetController() && TopDownCamera && TopDownCamera->IsActive())
 	{
-		const FVector2D MoveValue = Value.Get<FVector2D>();
+		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
 		FVector CameraForward = TopDownCamera->GetForwardVector();
 		FVector CameraRight = TopDownCamera->GetRightVector();
@@ -93,8 +97,8 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 		CameraForward.Normalize();
 		CameraRight.Normalize();
 
-		AddMovementInput(CameraForward, MoveValue.Y);
-		AddMovementInput(CameraRight, MoveValue.X);
+		AddMovementInput(CameraForward, Vector2DValue.Y);
+		AddMovementInput(CameraRight, Vector2DValue.X);
 	}
 }
 
@@ -102,10 +106,10 @@ void AStealthCharacter::Look(const FInputActionValue& Value)
 {
 	if (GetController() && FirstPersonCamera && FirstPersonCamera->IsActive())
 	{
-		const FVector2D LookValue = Value.Get<FVector2D>();
+		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
-		AddControllerYawInput(LookValue.X);
-		AddControllerPitchInput(LookValue.Y);
+		AddControllerYawInput(Vector2DValue.X);
+		AddControllerPitchInput(Vector2DValue.Y);
 	}
 }
 
@@ -136,6 +140,50 @@ void AStealthCharacter::SwitchView(const FInputActionValue& Value)
 		FirstPersonCamera->SetActive(false);
 		GetMesh()->SetVisibility(true);
 		bUseControllerRotationYaw = false;
+	}
+}
+
+void AStealthCharacter::ChangeStance(const FInputActionValue& Value)
+{
+	const bool bValue = Value.Get<bool>();
+
+	switch (CharacterStance)
+	{
+	case ECharacterStance::Prone:
+		if (bValue)
+		{
+			CharacterStance = ECharacterStance::Standing;
+		}
+		else
+		{
+			CharacterStance = ECharacterStance::Crouching;
+		}
+		break;
+
+	case ECharacterStance::Crouching:
+		if (bValue)
+		{
+			CharacterStance = ECharacterStance::Prone;
+		}
+		else
+		{
+			CharacterStance = ECharacterStance::Standing;
+		}
+		break;
+
+	case ECharacterStance::Standing:
+		if (bValue)
+		{
+			CharacterStance = ECharacterStance::Prone;
+		}
+		else
+		{
+			CharacterStance = ECharacterStance::Crouching;
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 
