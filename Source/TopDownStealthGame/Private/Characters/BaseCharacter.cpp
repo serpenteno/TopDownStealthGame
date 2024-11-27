@@ -26,15 +26,15 @@ void ABaseCharacter::Tick(float DeltaTime)
 	
 	FVector VelocityXY = GetVelocity();
 	VelocityXY.Z = 0;
-	const float& SpeedXY = VelocityXY.Length();
+	const float& GroundSpeed = VelocityXY.Length();
 
-	if (SpeedXY > GetCharacterMovement()->MaxWalkSpeedCrouched)
+	if (GroundSpeed > GetCharacterMovement()->MaxWalkSpeedCrouched)
 	{
 		MovementState = EMovementState::Running;
 	}
-	else if (SpeedXY <= GetCharacterMovement()->MaxWalkSpeedCrouched && SpeedXY > 0.0f)
+	else if (GroundSpeed <= GetCharacterMovement()->MaxWalkSpeedCrouched && GroundSpeed > 0.0f)
 	{
-		if (SpeedXY <= MaxCrawlSpeed && CharacterStance == ECharacterStance::Prone)
+		if (GroundSpeed <= MaxCrawlSpeed && CharacterStance == ECharacterStance::Prone)
 		{
 			MovementState = EMovementState::Crawling;
 		} 

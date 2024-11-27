@@ -65,4 +65,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bCanProne = false;
 
+public:
+	FORCEINLINE ECharacterStance GetCharacterStance() const { return CharacterStance; }
+	FORCEINLINE EMovementState GetMovementState() const { return MovementState; }
+
 };
