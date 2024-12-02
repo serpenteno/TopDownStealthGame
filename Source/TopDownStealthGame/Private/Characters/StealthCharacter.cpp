@@ -85,7 +85,7 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void AStealthCharacter::Move(const FInputActionValue& Value)
 {
-	if (GetController() && TopDownCamera && TopDownCamera->IsActive())
+	if (GetController() && TopDownCamera && TopDownCamera->IsActive() && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
 	{
 		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
@@ -152,33 +152,35 @@ void AStealthCharacter::ChangeStance(const FInputActionValue& Value)
 	case ECharacterStance::Prone:
 		if (bValue)
 		{
-			CharacterStance = ECharacterStance::Standing;
+			PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
+			PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
 		}
 		else
 		{
-			CharacterStance = ECharacterStance::Crouching;
+			PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
 		}
 		break;
 
 	case ECharacterStance::Crouching:
 		if (bValue)
 		{
-			CharacterStance = ECharacterStance::Prone;
+			PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
 		}
 		else
 		{
-			CharacterStance = ECharacterStance::Standing;
+			PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
 		}
 		break;
 
 	case ECharacterStance::Standing:
 		if (bValue)
 		{
-			CharacterStance = ECharacterStance::Prone;
+			PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
+			PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
 		}
 		else
 		{
-			CharacterStance = ECharacterStance::Crouching;
+			PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
 		}
 		break;
 

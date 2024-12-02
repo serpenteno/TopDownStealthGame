@@ -18,7 +18,7 @@ enum class ECharacterStance : uint8
 };
 
 /**
- * Describes the movement of a character base on it's current speed
+ * Describes the movement of a character based on it's current speed
  */
 UENUM(BlueprintType)
 enum class EMovementState : uint8
@@ -53,7 +53,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	void PlayMontage(UAnimMontage* MontageToPlay, const FName& SectionName) const;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ECharacterStance CharacterStance = ECharacterStance::Standing;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -65,4 +65,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
+	// Montages
+	UPROPERTY(EditAnywhere, Category = "Montages")
+	TObjectPtr<UAnimMontage> StanceTransitionMontage;
+
 };

@@ -56,3 +56,14 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ABaseCharacter::PlayMontage(UAnimMontage* MontageToPlay, const FName& SectionName) const
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && MontageToPlay)
+	{
+		AnimInstance->Montage_Play(MontageToPlay);
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
