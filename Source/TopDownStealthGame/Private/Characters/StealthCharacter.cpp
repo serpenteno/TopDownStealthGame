@@ -19,12 +19,16 @@ AStealthCharacter::AStealthCharacter()
 	TopDownCamera->SetupAttachment(CameraBoom);
 
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("First-Person Camera"));
-	FirstPersonCamera->SetupAttachment(GetMesh(), FName("Head"));
+	FirstPersonCamera->SetupAttachment(GetMesh(), FName("head"));
 	FirstPersonCamera->bUsePawnControlRotation = true;
+
+	// Note: Should bones aren't refreshed, FirstPersonCamera does not follow the socket it is attached to during animations
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones; 
 
 	GetCharacterMovement()->bCanWalkOffLedges = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
 	bUseControllerRotationYaw = false;
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	AutoPossessAI = EAutoPossessAI::Disabled;
@@ -50,8 +54,8 @@ void AStealthCharacter::BeginPlay()
 	// Camera setup
 	if (TopDownCamera && FirstPersonCamera)
 	{
-		TopDownCamera->SetActive(true);
-		FirstPersonCamera->SetActive(false);
+		TopDownCamera->Activate();
+		FirstPersonCamera->Deactivate();
 	}
 }
 
@@ -129,63 +133,66 @@ void AStealthCharacter::SwitchView(const FInputActionValue& Value)
 			GetController()->SetControlRotation(FRotator(0.0f, CameraRotation.Yaw, 0.0f));
 		}
 
+		GetMesh()->SetOwnerNoSee(true);
 		FirstPersonCamera->SetActive(true);
 		TopDownCamera->SetActive(false);
-		GetMesh()->SetVisibility(false);
 		bUseControllerRotationYaw = true;
 	}
 	else if (FirstPersonCamera->IsActive())
 	{
+		GetMesh()->SetOwnerNoSee(false);
 		TopDownCamera->SetActive(true);
 		FirstPersonCamera->SetActive(false);
-		GetMesh()->SetVisibility(true);
 		bUseControllerRotationYaw = false;
 	}
 }
 
 void AStealthCharacter::ChangeStance(const FInputActionValue& Value)
 {
-	const bool bValue = Value.Get<bool>();
-
-	switch (CharacterStance)
+	if (!GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
 	{
-	case ECharacterStance::Prone:
-		if (bValue)
-		{
-			PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
-			PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
-		}
-		else
-		{
-			PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
-		}
-		break;
+		const bool bValue = Value.Get<bool>();
 
-	case ECharacterStance::Crouching:
-		if (bValue)
+		switch (CharacterStance)
 		{
-			PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
-		}
-		else
-		{
-			PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
-		}
-		break;
+		case ECharacterStance::Prone:
+			if (bValue)
+			{
+				PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
+				PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
+			}
+			else
+			{
+				PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
+			}
+			break;
 
-	case ECharacterStance::Standing:
-		if (bValue)
-		{
-			PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
-			PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
-		}
-		else
-		{
-			PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
-		}
-		break;
+		case ECharacterStance::Crouching:
+			if (bValue)
+			{
+				PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
+			}
+			else
+			{
+				PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
+			}
+			break;
 
-	default:
-		break;
+		case ECharacterStance::Standing:
+			if (bValue)
+			{
+				PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
+				PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
+			}
+			else
+			{
+				PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 
