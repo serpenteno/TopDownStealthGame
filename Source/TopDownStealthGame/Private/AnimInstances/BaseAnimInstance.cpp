@@ -25,5 +25,6 @@ void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		GroundSpeed = UKismetMathLibrary::VSizeXY(BaseCharacterMovement->Velocity);
 		CharacterStance = BaseCharacter->GetCharacterStance();
 		MovementState = BaseCharacter->GetMovementState();
+		bIsAiming = BaseCharacter->GetIsAiming();
 	}
 }

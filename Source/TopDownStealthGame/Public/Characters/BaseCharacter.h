@@ -67,8 +67,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bCanProne = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsAiming = false;
+
 public:
 	FORCEINLINE ECharacterStance GetCharacterStance() const { return CharacterStance; }
 	FORCEINLINE EMovementState GetMovementState() const { return MovementState; }
+	FORCEINLINE bool GetIsAiming() const { return bIsAiming; }
 
 };

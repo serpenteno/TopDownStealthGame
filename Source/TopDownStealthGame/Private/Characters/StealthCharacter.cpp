@@ -84,12 +84,16 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		// ChangeStance
 		EnhancedInput->BindAction(ChangeStanceAction, ETriggerEvent::Triggered, this, &AStealthCharacter::ChangeStance);
 		EnhancedInput->BindAction(ChangeStanceAction, ETriggerEvent::Canceled, this, &AStealthCharacter::ChangeStance);
+	
+		// Aim
+		EnhancedInput->BindAction(AimAction, ETriggerEvent::Triggered, this, &AStealthCharacter::Aim);
+		EnhancedInput->BindAction(AimAction, ETriggerEvent::Completed, this, &AStealthCharacter::Aim);
 	}
 }
 
 void AStealthCharacter::Move(const FInputActionValue& Value)
 {
-	if (GetController() && TopDownCamera && TopDownCamera->IsActive() && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
+	if (CanMove())
 	{
 		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
@@ -108,7 +112,7 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 
 void AStealthCharacter::Look(const FInputActionValue& Value)
 {
-	if (GetController() && FirstPersonCamera && FirstPersonCamera->IsActive())
+	if (CanLook())
 	{
 		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
@@ -194,5 +198,29 @@ void AStealthCharacter::ChangeStance(const FInputActionValue& Value)
 			break;
 		}
 	}
+}
+
+void AStealthCharacter::Aim(const FInputActionValue& Value)
+{
+	const bool bValue = Value.Get<bool>();
+
+	if (bValue)
+	{
+		bIsAiming = true;
+	}
+	else
+	{
+		bIsAiming = false;
+	}
+}
+
+bool AStealthCharacter::CanMove() const
+{
+	return GetController() && TopDownCamera && TopDownCamera->IsActive() && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying() && !bIsAiming;
+}
+
+bool AStealthCharacter::CanLook() const
+{
+	return GetController() && FirstPersonCamera && FirstPersonCamera->IsActive();
 }
 

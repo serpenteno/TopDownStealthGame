@@ -39,4 +39,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement|States")
 	EMovementState MovementState;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsAiming;
+
 };
