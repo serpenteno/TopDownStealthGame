@@ -55,10 +55,10 @@ public:
 protected:
 	void PlayMontage(UAnimMontage* MontageToPlay, const FName& SectionName) const;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "States")
 	ECharacterStance CharacterStance = ECharacterStance::Standing;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "States")
 	EMovementState MovementState = EMovementState::Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -69,6 +69,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsAiming = false;
+
+	UPROPERTY(EditAnywhere)
+	float AimingRotationSpeed = 10.0f;
 
 public:
 	FORCEINLINE ECharacterStance GetCharacterStance() const { return CharacterStance; }

@@ -32,6 +32,7 @@ AStealthCharacter::AStealthCharacter()
 	bUseControllerRotationYaw = false;
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	AutoPossessAI = EAutoPossessAI::Disabled;
+	AIControllerClass = APlayerController::StaticClass();
 
 	bCanProne = true;
 }
@@ -97,16 +98,27 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 	{
 		const FVector2D Vector2DValue = Value.Get<FVector2D>();
 
-		FVector CameraForward = TopDownCamera->GetForwardVector();
-		FVector CameraRight = TopDownCamera->GetRightVector();
+		if (!bIsAiming)
+		{
+			FVector CameraForward = TopDownCamera->GetForwardVector();
+			FVector CameraRight = TopDownCamera->GetRightVector();
 
-		CameraForward.Z = 0;
-		CameraRight.Z = 0;
-		CameraForward.Normalize();
-		CameraRight.Normalize();
+			CameraForward.Z = 0;
+			CameraRight.Z = 0;
+			CameraForward.Normalize();
+			CameraRight.Normalize();
 
-		AddMovementInput(CameraForward, Vector2DValue.Y);
-		AddMovementInput(CameraRight, Vector2DValue.X);
+			AddMovementInput(CameraForward, Vector2DValue.Y);
+			AddMovementInput(CameraRight, Vector2DValue.X);
+		}
+		else
+		{
+			FRotator InputRotation = FVector(Vector2DValue.Y, Vector2DValue.X, 0.0f).Rotation();
+			FRotator TargetRotation = FRotator(0.0f, InputRotation.Yaw, 0.0f);
+			FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), AimingRotationSpeed);
+
+			SetActorRotation(SmoothRotation);
+		}
 	}
 }
 
@@ -216,7 +228,7 @@ void AStealthCharacter::Aim(const FInputActionValue& Value)
 
 bool AStealthCharacter::CanMove() const
 {
-	return GetController() && TopDownCamera && TopDownCamera->IsActive() && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying() && !bIsAiming;
+	return GetController() && TopDownCamera && TopDownCamera->IsActive() && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
 }
 
 bool AStealthCharacter::CanLook() const
