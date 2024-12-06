@@ -140,7 +140,9 @@ void AStealthCharacter::SwitchView(const FInputActionValue& Value)
 		return;
 	}
 
-	if (TopDownCamera->IsActive())
+	const bool bValue = Value.Get<bool>();
+
+	if (bValue)
 	{
 		// Ensure controller matches the FirstPersonCamera rotation
 		if (GetController())
@@ -154,7 +156,7 @@ void AStealthCharacter::SwitchView(const FInputActionValue& Value)
 		TopDownCamera->SetActive(false);
 		bUseControllerRotationYaw = true;
 	}
-	else if (FirstPersonCamera->IsActive())
+	else
 	{
 		GetMesh()->SetOwnerNoSee(false);
 		TopDownCamera->SetActive(true);
