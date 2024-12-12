@@ -100,22 +100,20 @@ void AStealthCharacter::Move(const FInputActionValue& Value)
 
 		if (!bIsAiming)
 		{
-			FVector CameraForward = TopDownCamera->GetForwardVector();
-			FVector CameraRight = TopDownCamera->GetRightVector();
+			const FRotator& CameraRotation = TopDownCamera->GetComponentRotation();
+			const FRotator YawRotation = FRotator(0.0f, CameraRotation.Yaw, 0.0f);
+			const FRotationMatrix RotationMatrix = FRotationMatrix(YawRotation);
+			const FVector& ForwardDirection = RotationMatrix.GetUnitAxis(EAxis::X);
+			const FVector& RightDirection = RotationMatrix.GetUnitAxis(EAxis::Y);
 
-			CameraForward.Z = 0;
-			CameraRight.Z = 0;
-			CameraForward.Normalize();
-			CameraRight.Normalize();
-
-			AddMovementInput(CameraForward, Vector2DValue.Y);
-			AddMovementInput(CameraRight, Vector2DValue.X);
+			AddMovementInput(ForwardDirection, Vector2DValue.Y);
+			AddMovementInput(RightDirection, Vector2DValue.X);
 		}
 		else
 		{
-			FRotator InputRotation = FVector(Vector2DValue.Y, Vector2DValue.X, 0.0f).Rotation();
-			FRotator TargetRotation = FRotator(0.0f, InputRotation.Yaw, 0.0f);
-			FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), AimingRotationSpeed);
+			const FRotator InputRotation = FVector(Vector2DValue.Y, Vector2DValue.X, 0.0f).Rotation();
+			const FRotator TargetRotation = FRotator(0.0f, InputRotation.Yaw, 0.0f);
+			const FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), AimingRotationSpeed);
 
 			SetActorRotation(SmoothRotation);
 		}
