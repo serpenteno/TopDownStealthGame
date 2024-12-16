@@ -12,9 +12,9 @@
 UENUM(BlueprintType)
 enum class ECharacterStance : uint8
 {
-	Prone UMETA(DisplayName = "Prone"),
+	Standing UMETA(DisplayName = "Standing"),
 	Crouching UMETA(DisplayName = "Crouching"),
-	Standing UMETA(DisplayName = "Standing")
+	Prone UMETA(DisplayName = "Prone")
 };
 
 /**

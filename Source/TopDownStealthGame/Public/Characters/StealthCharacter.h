@@ -33,6 +33,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+
 	// Callbacks for InputActions
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -74,6 +77,6 @@ private:
 
 	// Montages
 	UPROPERTY(EditAnywhere, Category = "Montages")
-	TObjectPtr<UAnimMontage> StanceTransitionMontage;
+	TObjectPtr<UAnimMontage> CharacterStanceMontage;
 
 };

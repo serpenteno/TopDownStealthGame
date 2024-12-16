@@ -92,6 +92,20 @@ void AStealthCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	}
 }
 
+void AStealthCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	
+	CharacterStance = ECharacterStance::Crouching;
+}
+
+void AStealthCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	
+	CharacterStance = ECharacterStance::Standing;
+}
+
 void AStealthCharacter::Move(const FInputActionValue& Value)
 {
 	if (CanMove())
@@ -171,38 +185,36 @@ void AStealthCharacter::ChangeStance(const FInputActionValue& Value)
 
 		switch (CharacterStance)
 		{
-		case ECharacterStance::Prone:
+		case ECharacterStance::Standing:
 			if (bValue)
 			{
-				PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
-				PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
+				// Prone();
 			}
 			else
 			{
-				PlayMontage(StanceTransitionMontage, FName("ProneToCrouch"));
+				Crouch();
 			}
 			break;
 
 		case ECharacterStance::Crouching:
 			if (bValue)
 			{
-				PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
+				// Prone();
 			}
 			else
 			{
-				PlayMontage(StanceTransitionMontage, FName("CrouchToStand"));
+				UnCrouch();
 			}
 			break;
 
-		case ECharacterStance::Standing:
+		case ECharacterStance::Prone:
 			if (bValue)
 			{
-				PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
-				PlayMontage(StanceTransitionMontage, FName("CrouchToProne"));
+				// UnProne();
 			}
 			else
 			{
-				PlayMontage(StanceTransitionMontage, FName("StandToCrouch"));
+				// UnProne();
 			}
 			break;
 
