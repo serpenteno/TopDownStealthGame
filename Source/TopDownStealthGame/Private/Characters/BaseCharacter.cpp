@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © serpenteno, 2024. All Rights Reserved.
 
 
 #include "Characters/BaseCharacter.h"
