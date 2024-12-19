@@ -22,6 +22,7 @@ class TOPDOWNSTEALTHGAME_API UBaseAnimInstance : public UAnimInstance
 	
 public:
 	virtual void NativeInitializeAnimation() override;
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	UPROPERTY(BlueprintReadOnly)

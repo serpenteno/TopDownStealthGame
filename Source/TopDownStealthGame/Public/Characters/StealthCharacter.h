@@ -34,16 +34,22 @@ public:
 
 private:
 	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+
 	void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 
 	// Callbacks for InputActions
 	void Move(const FInputActionValue& Value);
+
 	void Look(const FInputActionValue& Value);
+
 	void SwitchView(const FInputActionValue& Value);
+
 	void ChangeStance(const FInputActionValue& Value);
+
 	void Aim(const FInputActionValue& Value);
 
 	bool CanMove() const;
+
 	bool CanLook() const;
 
 	// Enhanced Input

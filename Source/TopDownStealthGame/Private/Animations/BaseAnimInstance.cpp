@@ -1,7 +1,7 @@
 // Copyright © serpenteno, 2024. All Rights Reserved.
 
 
-#include "AnimInstances/BaseAnimInstance.h"
+#include "Animations/BaseAnimInstance.h"
 #include "Characters/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
