@@ -1,4 +1,4 @@
-// Copyright © serpenteno, 2024. All Rights Reserved.
+// Copyright serpenteno, 2024. All Rights Reserved.
 
 
 #include "Characters/StealthCharacter.h"
